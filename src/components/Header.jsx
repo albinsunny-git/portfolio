@@ -1,7 +1,6 @@
 import React from 'react';
-import { Settings } from 'lucide-react';
 
-export default function Header({ profileName, avatarUrl, onOpenSettings, currentTab, setCurrentTab }) {
+export default function Header({ profileName, avatarUrl, currentTab, setCurrentTab }) {
   return (
     <header className="header">
       <div className="header-left" style={{ cursor: 'pointer' }} onClick={() => setCurrentTab('home')}>
@@ -44,9 +43,7 @@ export default function Header({ profileName, avatarUrl, onOpenSettings, current
         </button>
       </nav>
 
-      <button className="header-settings-btn" onClick={onOpenSettings} aria-label="Open portfolio settings">
-        <Settings size={20} />
-      </button>
+
     </header>
   );
 }

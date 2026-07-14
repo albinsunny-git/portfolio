@@ -131,7 +131,6 @@ export default function App() {
       <Header 
         profileName={portfolioData.name} 
         avatarUrl={portfolioData.avatarUrl}
-        onOpenSettings={() => setSettingsOpen(true)}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
       />
