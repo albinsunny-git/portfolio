@@ -108,7 +108,7 @@ export default function AboutView({ portfolioData }) {
           <a
             href="mailto:albinsunny2028@mca.ajce.in"
             className="about-link"
-            aria-label="Send Email"
+            aria-label="Send  Email"
           >
             <Mail size={14} />
             <span>Email</span>
