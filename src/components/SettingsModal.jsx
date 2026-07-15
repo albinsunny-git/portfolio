@@ -12,7 +12,7 @@ export default function SettingsModal({
   const [accent, setAccent] = useState('teal');
   const [mode, setMode] = useState('light');
   
-  const [statProjects, setStatProjects] = useState(5);
+  const [statProjects, setStatProjects] = useState(6);
   const [statCertifications, setStatCertifications] = useState(13);
   const [statHackathons, setStatHackathons] = useState(2);
 
@@ -23,7 +23,7 @@ export default function SettingsModal({
       setStatusText(portfolioData.statusText || 'Open for Internships');
       setAccent(portfolioData.accent || 'teal');
       setMode(portfolioData.mode || 'light');
-      setStatProjects(portfolioData.stats?.projects || 5);
+      setStatProjects(portfolioData.stats?.projects || 6);
       setStatCertifications(portfolioData.stats?.certifications || 13);
       setStatHackathons(portfolioData.stats?.hackathons || 2);
     }

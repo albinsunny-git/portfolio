@@ -1,12 +1,8 @@
 import React from 'react';
-import { Folder, Award, Trophy, ChevronRight, ExternalLink } from 'lucide-react';
+import { Folder, Award, Trophy, ChevronRight } from 'lucide-react';
 
 export default function HomeView({ portfolioData, setCurrentTab }) {
   const { name, statusText, stats } = portfolioData;
-
-  const handleFeaturedClick = () => {
-    alert("Navigating to Financial Management System Details!");
-  };
 
   return (
     <div className="home-view">
@@ -76,9 +72,6 @@ export default function HomeView({ portfolioData, setCurrentTab }) {
             <p className="card-desc">
               A comprehensive financial management site and mobile app enabling automated generation of balance sheets and crucial financial documents using standard voucher entries.
             </p>
-            <button className="btn-primary" onClick={handleFeaturedClick}>
-              View Details <ExternalLink size={14} />
-            </button>
           </div>
         </div>
       </section>

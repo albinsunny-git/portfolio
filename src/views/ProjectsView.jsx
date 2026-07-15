@@ -52,6 +52,15 @@ export default function ProjectsView() {
       tags: ['HTML5', 'CSS3', 'JavaScript'],
       image: '/project-dashboard.png',
       fallback: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80'
+    },
+    {
+      id: 6,
+      title: 'Car Rental Website Redesign',
+      type: 'Micro Project',
+      description: 'A modern, high-fidelity UI redesign for a car rental service, focusing on optimized booking user flows and slick aesthetic enhancements.',
+      tags: ['Figma', 'UI/UX', 'Responsive Design'],
+      image: '/project-dashboard.png',
+      fallback: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80'
     }
   ];
 

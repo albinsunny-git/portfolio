@@ -18,8 +18,8 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.stats && (parsed.stats.projects === 12 || parsed.stats.projects === 1)) {
-          parsed.stats.projects = 5;
+        if (parsed.stats && (parsed.stats.projects === 12 || parsed.stats.projects === 1 || parsed.stats.projects === 5)) {
+          parsed.stats.projects = 6;
         }
         if (parsed.stats && parsed.stats.hackathons === 3) {
           parsed.stats.hackathons = 2;
@@ -41,7 +41,7 @@ export default function App() {
       accent: 'teal',
       mode: 'light',
       stats: {
-        projects: 5,
+        projects: 6,
         certifications: 13,
         hackathons: 2,
       },
