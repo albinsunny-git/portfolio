@@ -1,1 +1,2 @@
-merge file content
+merge file content.
+one more line added.
