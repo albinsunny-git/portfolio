@@ -1,70 +1,68 @@
 import React, { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 
+const projectsData = [
+  {
+    id: 1,
+    title: 'Financial Management System',
+    type: 'Mini Project',
+    description: 'A comprehensive financial management site and mobile app enabling automated generation of balance sheets and financial statements using voucher entries.',
+    tags: ['Flutter', 'HTML5', 'PHP', 'JavaScript', 'CSS3'],
+    image: '/project-dashboard.png',
+    fallback: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 2,
+    title: 'Nanotechnology Research Paper',
+    type: 'Micro Project',
+    description: 'Authored and published a scientific research paper in the field of Nanotechnology in an S1 journal, formatted and typeset using LaTeX.',
+    tags: ['LaTeX', 'Nanotechnology', 'S1 Journal', 'Research'],
+    image: '/project-desktop.png',
+    fallback: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 3,
+    title: 'Maze Solver Game',
+    type: 'Micro Project',
+    description: 'An interactive grid-based maze traversal and solver game developed in C and C++ utilizing graphical structures.',
+    tags: ['C++', 'C', 'Algorithms', 'GameDev'],
+    image: '/project-desktop.png',
+    fallback: 'https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 4,
+    title: 'Bank Management System',
+    type: 'Micro Project',
+    description: 'A console-based object-oriented bank database application in C++ supporting account creation, deposits, withdrawals, and persistent ledger storage.',
+    tags: ['C++', 'OOP', 'Console App'],
+    image: '/project-desktop.png',
+    fallback: 'https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 5,
+    title: 'Bus Booking System',
+    type: 'Micro Project',
+    description: 'A clean, responsive web application for bus ticket reservations featuring seat selection, live price calculations, and input forms validation.',
+    tags: ['HTML5', 'CSS3', 'JavaScript'],
+    image: '/project-dashboard.png',
+    fallback: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 6,
+    title: 'Car Rental Website Redesign',
+    type: 'Micro Project',
+    description: 'A modern, high-fidelity UI redesign for a car rental service, focusing on optimized booking user flows and slick aesthetic enhancements.',
+    tags: ['Figma', 'UI/UX', 'Responsive Design'],
+    image: '/project-dashboard.png',
+    fallback: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80'
+  }
+];
+
 export default function ProjectsView() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
   const categories = ['All', 'Mini Projects', 'Micro Projects'];
-
-  const projectsData = [
-    {
-      id: 1,
-      title: 'Financial Management System',
-      type: 'Mini Project',
-      description: 'A comprehensive financial management site and mobile app enabling automated generation of balance sheets and financial statements using voucher entries.',
-      tags: ['Flutter', 'HTML5', 'PHP', 'JavaScript', 'CSS3'],
-      image: '/project-dashboard.png',
-      fallback: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80'
-    },
-    {
-      id: 2,
-      title: 'Nanotechnology Research Paper',
-      type: 'Micro Project',
-      description: 'Authored and published a scientific research paper in the field of Nanotechnology in an S1 journal, formatted and typeset using LaTeX.',
-      tags: ['LaTeX', 'Nanotechnology', 'S1 Journal', 'Research'],
-      image: '/project-desktop.png',
-      fallback: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=600&q=80'
-    },
-    {
-      id: 3,
-      title: 'Maze Solver Game',
-      type: 'Micro Project',
-      description: 'An interactive grid-based maze traversal and solver game developed in C and C++ utilizing graphical structures.',
-      tags: ['C++', 'C', 'Algorithms', 'GameDev'],
-      image: '/project-desktop.png',
-      fallback: 'https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&w=600&q=80'
-    },
-    {
-      id: 4,
-      title: 'Bank Management System',
-      type: 'Micro Project',
-      description: 'A console-based object-oriented bank database application in C++ supporting account creation, deposits, withdrawals, and persistent ledger storage.',
-      tags: ['C++', 'OOP', 'Console App'],
-      image: '/project-desktop.png',
-      fallback: 'https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?auto=format&fit=crop&w=600&q=80'
-    },
-    {
-      id: 5,
-      title: 'Bus Booking System',
-      type: 'Micro Project',
-      description: 'A clean, responsive web application for bus ticket reservations featuring seat selection, live price calculations, and input forms validation.',
-      tags: ['HTML5', 'CSS3', 'JavaScript'],
-      image: '/project-dashboard.png',
-      fallback: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80'
-    },
-    {
-      id: 6,
-      title: 'Car Rental Website Redesign',
-      type: 'Micro Project',
-      description: 'A modern, high-fidelity UI redesign for a car rental service, focusing on optimized booking user flows and slick aesthetic enhancements.',
-      tags: ['Figma', 'UI/UX', 'Responsive Design'],
-      image: '/project-dashboard.png',
-      fallback: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80'
-    }
-  ];
-
-
 
   // Live filter and search logic
   const filteredProjects = useMemo(() => {

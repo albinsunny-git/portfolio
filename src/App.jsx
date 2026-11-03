@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
-import BottomNav from './components/BottomNav';
+import HeroSection from './components/HeroSection';
+import AboutSection from './components/AboutSection';
+import ServicesSection from './components/ServicesSection';
+import ProjectsSection from './components/ProjectsSection';
+import TestimonialsSection from './components/TestimonialsSection';
+import ContactSection from './components/ContactSection';
+import Footer from './components/Footer';
+import CertificationsModal from './components/CertificationsModal';
 import SettingsModal from './components/SettingsModal';
-
-import HomeView from './views/HomeView';
-import ProjectsView from './views/ProjectsView';
-import CertificationsView from './views/CertificationsView';
-import AboutView from './views/AboutView';
+import CustomCursor from './components/CustomCursor';
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState('home');
   const [settingsOpen, setSettingsOpen] = useState(false);
-  
-  // Default Portfolio Profile State
+  const [certificationsOpen, setCertificationsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');
+
+  // Default Portfolio Profile State with LocalStorage Persistence
   const [portfolioData, setPortfolioData] = useState(() => {
     const saved = localStorage.getItem('portfolio_data');
     if (saved) {
@@ -37,9 +41,9 @@ export default function App() {
     }
     return {
       name: 'Albin Sunny',
-      statusText: 'Open for Internships',
-      accent: 'teal',
-      mode: 'light',
+      statusText: 'Available for Internships & Projects',
+      accent: 'purple',
+      mode: 'dark',
       stats: {
         projects: 6,
         certifications: 13,
@@ -49,9 +53,6 @@ export default function App() {
     };
   });
 
-
-
-
   // Persist settings
   useEffect(() => {
     localStorage.setItem('portfolio_data', JSON.stringify(portfolioData));
@@ -60,23 +61,24 @@ export default function App() {
   // Apply accent theme and light/dark mode changes
   useEffect(() => {
     const root = document.documentElement;
-    
-    // 1. Apply accent colors using CSS custom properties
-    let hue = 173, sat = '80%', lig = '32%'; // Teal defaults
-    
-    if (portfolioData.accent === 'blue') {
+
+    // Apply accent colors using CSS custom properties
+    let hue = 262, sat = '83%', lig = '58%'; // Purple Default
+    if (portfolioData.accent === 'teal') {
+      hue = 173; sat = '80%'; lig = '32%';
+    } else if (portfolioData.accent === 'blue') {
       hue = 221; sat = '83%'; lig = '53%';
-    } else if (portfolioData.accent === 'purple') {
-      hue = 262; sat = '83%'; lig = '58%';
+    } else if (portfolioData.accent === 'pink') {
+      hue = 330; sat = '81%'; lig = '60%';
     } else if (portfolioData.accent === 'amber') {
       hue = 35; sat = '92%'; lig = '47%';
     }
-    
+
     root.style.setProperty('--primary-hue', hue.toString());
     root.style.setProperty('--primary-sat', sat);
     root.style.setProperty('--primary-lig', lig);
 
-    // 2. Apply Light/Dark/System Theme Mode
+    // Apply Light/Dark/System Theme Mode
     const applyThemeMode = (themeMode) => {
       if (themeMode === 'dark') {
         root.setAttribute('data-theme', 'dark');
@@ -90,31 +92,36 @@ export default function App() {
 
     applyThemeMode(portfolioData.mode);
 
-    // Watch system theme change if 'system' is active
     if (portfolioData.mode === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       const handleSystemThemeChange = () => applyThemeMode('system');
-      
       mediaQuery.addEventListener('change', handleSystemThemeChange);
       return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
     }
   }, [portfolioData.accent, portfolioData.mode]);
 
-  // Render view depending on the selected tab
-  const renderActiveView = () => {
-    switch (currentTab) {
-      case 'home':
-        return <HomeView portfolioData={portfolioData} setCurrentTab={setCurrentTab} />;
-      case 'projects':
-        return <ProjectsView />;
-      case 'certifications':
-        return <CertificationsView />;
-      case 'about':
-        return <AboutView portfolioData={portfolioData} />;
-      default:
-        return <HomeView portfolioData={portfolioData} setCurrentTab={setCurrentTab} />;
-    }
-  };
+  // Active Section Spy for Navigation Indicator
+  useEffect(() => {
+    const sections = ['hero', 'about', 'services', 'projects', 'testimonials', 'contact'];
+    
+    const handleScrollSpy = () => {
+      const scrollPos = window.scrollY + 200;
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveSection(sectionId);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScrollSpy, { passive: true });
+    return () => window.removeEventListener('scroll', handleScrollSpy);
+  }, []);
 
   const handleSaveSettings = (newData) => {
     setPortfolioData((prev) => ({
@@ -123,59 +130,54 @@ export default function App() {
     }));
   };
 
-
-
   return (
-    <div className="app-container">
-      {/* Top Sticky Header */}
-      <Header 
-        profileName={portfolioData.name} 
-        avatarUrl={portfolioData.avatarUrl}
-        currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
+    <div className="portfolio-app-root">
+      {/* Desktop Custom Precision & Glow Cursor */}
+      <CustomCursor />
+
+      {/* Floating Glassmorphic Navigation Bar */}
+      <Header
+        profileName={portfolioData.name}
+        activeSection={activeSection}
+        onOpenSettings={() => setSettingsOpen(true)}
+        onOpenCertifications={() => setCertificationsOpen(true)}
       />
 
-      {/* Main Tab View Panel */}
-      <main className="main-content">
-        {renderActiveView()}
+      {/* Main Single-Page Immersive 3D Experience */}
+      <main className="creative-content-wrapper">
+        {/* 1. Hero Section (Cinematic Black #050505 + 3D Cyber Character) */}
+        <HeroSection portfolioData={portfolioData} />
+
+        {/* 2. About Me Section (Visually Expressive + Floating 3D Geometric Artifacts) */}
+        <AboutSection 
+          portfolioData={portfolioData} 
+          onOpenCertifications={() => setCertificationsOpen(true)} 
+        />
+
+        {/* 3. Services Section (Clean White Background + Numbered List 01-05 + Hover Expansion) */}
+        <ServicesSection />
+
+        {/* 4. Projects / Showcase Section (Curated Showcase, Featured Full-Width + Grid + Filter) */}
+        <ProjectsSection />
+
+        {/* 5. Testimonials Section (Clean Dark Cards + Verified Mentors & Leads) */}
+        <TestimonialsSection />
+
+        {/* 6. Contact Section (Clean White Background + Form + 3D Decorative Accents) */}
+        <ContactSection />
       </main>
 
-      {/* Shared Dark Footer */}
-      <footer className="footer">
-        <div className="footer-links">
-          <a 
-            href="mailto:albinsunny2028@mca.ajce.in"
-            style={{ color: 'inherit', fontWeight: 'inherit', textDecoration: 'none' }}
-          >
-            Contact Me
-          </a>
-          <a 
-            href="https://github.com/albinsunny-git" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={{ color: 'inherit', fontWeight: 'inherit', textDecoration: 'none' }}
-          >
-            GitHub
-          </a>
-          <a 
-            href="https://www.linkedin.com/in/albin-sunny-7b0448290" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={{ color: 'inherit', fontWeight: 'inherit', textDecoration: 'none' }}
-          >
-            LinkedIn
-          </a>
-        </div>
-        <p className="footer-copy">
-          &copy; {new Date().getFullYear()} Student Portfolio. Built with precision.
-        </p>
-      </footer>
+      {/* Premium Dark Signature Footer */}
+      <Footer profileName={portfolioData.name} />
 
-      {/* Bottom Navigation Tab Bar (Mobile View) */}
-      <BottomNav currentTab={currentTab} setCurrentTab={setCurrentTab} />
+      {/* Preserved Certifications & Credentials Lightbox Drawer (13 Certs + 2 Internships + Hackathons) */}
+      <CertificationsModal
+        isOpen={certificationsOpen}
+        onClose={() => setCertificationsOpen(false)}
+      />
 
-      {/* Settings Dialog Overlay */}
-      <SettingsModal 
+      {/* Preserved Profile Customizer Settings Dialog */}
+      <SettingsModal
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         portfolioData={portfolioData}
