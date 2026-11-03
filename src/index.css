@@ -228,17 +228,42 @@ button {
 .brand-link {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
   cursor: pointer;
   user-select: none;
+}
+
+.brand-avatar-mini-wrap {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+  box-shadow: 0 0 14px rgba(139, 92, 246, 0.4);
+}
+
+.brand-avatar-mini {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.brand-avatar-mini-wrap .brand-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border: 1.5px solid #050505;
 }
 
 .brand-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--accent-purple);
-  box-shadow: 0 0 10px var(--accent-purple);
+  background-color: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
   animation: pulseGlow 2.5s infinite;
 }
 
@@ -706,40 +731,236 @@ button {
   color: var(--accent-purple);
 }
 
-/* 3D Wrapper */
+/* 3D Wrapper & Blender Viewport Showcase */
 .hero-3d-wrapper {
   position: relative;
   width: 100%;
-  height: 480px;
+  min-height: 520px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 @media (min-width: 960px) {
   .hero-3d-wrapper {
-    height: 560px;
+    min-height: 600px;
   }
 }
 
 .hero-3d-glow-backdrop {
   position: absolute;
-  width: 340px;
-  height: 340px;
+  width: 420px;
+  height: 420px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(236, 72, 153, 0.15) 50%, transparent 70%);
-  filter: blur(40px);
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, rgba(236, 72, 153, 0.2) 45%, transparent 70%);
+  filter: blur(55px);
   pointer-events: none;
 }
 
-.hero-3d-hint {
+/* Blender Viewport HUD Header Bar */
+.blender-hud-top {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  z-index: 20;
+}
+
+.blender-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: #E4E4E7;
+}
+
+.blender-dot-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #F97316; /* Blender Orange */
+  box-shadow: 0 0 8px #F97316;
+  animation: pulseGlow 2s infinite;
+}
+
+.blender-badge-text {
+  letter-spacing: 0.02em;
+}
+
+.blender-toggle-group {
+  display: flex;
+  gap: 0.35rem;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  padding: 0.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.blender-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: #A1A1AA;
+  transition: all var(--transition-fast);
+}
+
+.blender-toggle-btn:hover {
+  color: #FFFFFF;
+}
+
+.blender-toggle-btn-active {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+  color: #FFFFFF;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.35);
+}
+
+/* 8K Cartoon Avatar Card */
+.avatar-8k-card {
+  width: 100%;
+  max-width: 440px;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.avatar-8k-image-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 2rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #08090E;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 92, 246, 0.2);
+}
+
+.avatar-8k-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-8k-rim-flare {
   position: absolute;
-  bottom: 0.5rem;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  top: 0;
+  right: 0;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, transparent 70%);
   pointer-events: none;
+}
+
+.avatar-8k-glass-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 40%, rgba(139, 92, 246, 0.08) 100%);
+  pointer-events: none;
+}
+
+.avatar-floating-badge {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(5, 5, 5, 0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.02em;
+}
+
+.avatar-floating-badge.top-right {
+  top: 1.25rem;
+  right: 1.25rem;
+  color: #F472B6;
+}
+
+.avatar-floating-badge.bottom-left {
+  bottom: 1.25rem;
+  left: 1.25rem;
+  color: #38BDF8;
+}
+
+/* Interactive Three.js Container */
+.avatar-interactive-container {
+  width: 100%;
+  max-width: 440px;
+  height: 440px;
+  position: relative;
+  z-index: 10;
+}
+
+.shading-controls-bar {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  z-index: 25;
+}
+
+.shading-label {
+  font-size: 0.68rem;
+  color: #71717A;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.shading-btn {
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #A1A1AA;
+  transition: all var(--transition-fast);
+}
+
+.shading-btn:hover {
+  color: #FFFFFF;
+}
+
+.shading-btn-active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.blender-hud-bottom {
+  margin-top: 0.85rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  z-index: 10;
 }
 
 /* Bottom Scroll Indicator */
@@ -890,6 +1111,60 @@ button {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+/* 8K 3D Creative Character Card */
+.about-character-card {
+  width: 100%;
+  position: relative;
+  border-radius: 1.75rem;
+  background: var(--color-dark-card);
+  border: 1px solid var(--color-dark-border);
+  overflow: hidden;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 30px rgba(139, 92, 246, 0.15);
+}
+
+.about-character-frame {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  overflow: hidden;
+}
+
+.about-character-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.about-char-badge {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.about-char-badge.top-left {
+  top: 1.25rem;
+  left: 1.25rem;
+  color: #F97316;
+}
+
+.about-char-badge.bottom-right {
+  bottom: 1.25rem;
+  right: 1.25rem;
+  color: #C084FC;
 }
 
 .about-3d-card {
@@ -1047,6 +1322,60 @@ button {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 0.4rem;
+}
+
+/* Blender 3D Specs Card */
+.blender-specs-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-dark-border);
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.blender-specs-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.specs-icon {
+  color: var(--accent-purple);
+}
+
+.specs-title {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.blender-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.spec-label {
+  font-size: 0.7rem;
+  color: #71717A;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.spec-value {
+  font-size: 0.825rem;
+  color: #E4E4E7;
+  font-weight: 600;
 }
 
 .skills-subheading {

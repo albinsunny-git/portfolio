@@ -55,9 +55,17 @@ export default function Header({
             role="button"
             tabIndex={0}
           >
-            <span className="brand-dot"></span>
+            <div className="brand-avatar-mini-wrap">
+              <img 
+                src="/3d-avatar-hero.jpg" 
+                alt={profileName} 
+                className="brand-avatar-mini"
+                onError={(e) => { e.target.src = "/avatar.png"; }}
+              />
+              <span className="brand-dot"></span>
+            </div>
             <span className="brand-text">{profileName.toUpperCase()}</span>
-            <span className="brand-badge">3D Portfolio</span>
+            <span className="brand-badge">3D Avatar</span>
           </div>
 
           {/* Desktop Navigation Links */}

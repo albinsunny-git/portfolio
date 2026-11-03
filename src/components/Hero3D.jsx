@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-export default function Hero3D() {
+export default function Hero3D({ shadingMode = 'rendered' }) {
   const containerRef = useRef(null);
+  const materialsRef = useRef([]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -14,7 +15,7 @@ export default function Hero3D() {
     const height = container.clientHeight || 500;
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 7.5);
+    camera.position.set(0, 0.2, 7.2);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -27,281 +28,384 @@ export default function Hero3D() {
     renderer.toneMappingExposure = 1.35;
     container.appendChild(renderer.domElement);
 
-    // Master Character Group
+    // Master Character & Studio Group
     const characterGroup = new THREE.Group();
     scene.add(characterGroup);
 
+    materialsRef.current = [];
+
     // ==========================================
-    // 3D CYBER CHARACTER / CREATIVE 3D OBJECT
+    // STYLIZED 3D CARTOON AVATAR (ALBIN SUNNY)
+    // Pixar / Blender 3D Character Aesthetic
     // ==========================================
 
-    // 1. Head / Helmet Core (Dark Obsidian Chrome)
-    const headGeo = new THREE.SphereGeometry(1.4, 64, 64);
-    const headMat = new THREE.MeshPhysicalMaterial({
-      color: 0x0c0d14,
-      metalness: 0.88,
-      roughness: 0.18,
-      clearcoat: 0.8,
-      clearcoatRoughness: 0.1,
-      reflectivity: 0.9,
+    // 1. Head & Face (Warm Subsurface Skin Tone)
+    const headGeo = new THREE.SphereGeometry(1.25, 64, 64);
+    headGeo.scale(1.0, 1.15, 1.05);
+
+    const skinMat = new THREE.MeshPhysicalMaterial({
+      color: 0xdfa07a, // Warm South Asian complexion
+      roughness: 0.38,
+      metalness: 0.04,
+      clearcoat: 0.2,
+      clearcoatRoughness: 0.25,
+      reflectivity: 0.4,
     });
-    const headMesh = new THREE.Mesh(headGeo, headMat);
+    materialsRef.current.push({ mat: skinMat, originalColor: 0xdfa07a, isSkin: true });
+
+    const headMesh = new THREE.Mesh(headGeo, skinMat);
     characterGroup.add(headMesh);
 
-    // 2. Futuristic Curved Visor
-    const visorGeo = new THREE.SphereGeometry(1.42, 48, 48, 0, Math.PI * 2, Math.PI * 0.32, Math.PI * 0.38);
-    const visorMat = new THREE.MeshPhysicalMaterial({
-      color: 0x050608,
-      metalness: 0.95,
-      roughness: 0.05,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.05,
-    });
-    const visorMesh = new THREE.Mesh(visorGeo, visorMat);
-    characterGroup.add(visorMesh);
+    // Neck
+    const neckGeo = new THREE.CylinderGeometry(0.55, 0.65, 0.7, 32);
+    const neckMesh = new THREE.Mesh(neckGeo, skinMat);
+    neckMesh.position.set(0, -1.2, -0.05);
+    characterGroup.add(neckMesh);
 
-    // 3. Glowing Cyber Visor HUD / Eyes (Expressive Digital Face)
+    // Cheeks (Soft Cartoon Rosiness)
+    const cheekGeo = new THREE.SphereGeometry(0.28, 24, 24);
+    cheekGeo.scale(1.1, 0.7, 0.4);
+    const blushMat = new THREE.MeshBasicMaterial({
+      color: 0xe07b67,
+      transparent: true,
+      opacity: 0.22,
+    });
+    const leftCheek = new THREE.Mesh(cheekGeo, blushMat);
+    leftCheek.position.set(-0.68, -0.15, 1.02);
+    const rightCheek = leftCheek.clone();
+    rightCheek.position.set(0.68, -0.15, 1.02);
+    characterGroup.add(leftCheek, rightCheek);
+
+    // 2. Volumetric Stylized Dark Hair (Pompadour & Side Waves)
+    const hairGroup = new THREE.Group();
+    const hairMat = new THREE.MeshStandardMaterial({
+      color: 0x141217,
+      roughness: 0.55,
+      metalness: 0.25,
+    });
+    materialsRef.current.push({ mat: hairMat, originalColor: 0x141217, isHair: true });
+
+    // Main Hair Cap
+    const hairCapGeo = new THREE.SphereGeometry(1.3, 48, 48);
+    hairCapGeo.scale(1.04, 1.08, 1.08);
+    const hairCap = new THREE.Mesh(hairCapGeo, hairMat);
+    hairCap.position.set(0, 0.22, -0.08);
+    hairGroup.add(hairCap);
+
+    // Front Volumetric Quiff Waves
+    const quiff1Geo = new THREE.SphereGeometry(0.55, 32, 32);
+    quiff1Geo.scale(1.2, 0.8, 1.1);
+    const quiff1 = new THREE.Mesh(quiff1Geo, hairMat);
+    quiff1.position.set(0, 1.25, 0.5);
+    quiff1.rotation.x = 0.2;
+
+    const quiff2Geo = new THREE.SphereGeometry(0.48, 32, 32);
+    quiff2Geo.scale(1.0, 0.7, 0.9);
+    const quiff2 = new THREE.Mesh(quiff2Geo, hairMat);
+    quiff2.position.set(-0.45, 1.15, 0.45);
+    quiff2.rotation.z = 0.25;
+
+    const quiff3Geo = new THREE.SphereGeometry(0.48, 32, 32);
+    quiff3Geo.scale(1.0, 0.7, 0.9);
+    const quiff3 = new THREE.Mesh(quiff3Geo, hairMat);
+    quiff3.position.set(0.45, 1.15, 0.45);
+    quiff3.rotation.z = -0.25;
+
+    hairGroup.add(quiff1, quiff2, quiff3);
+    characterGroup.add(hairGroup);
+
+    // 3. Expressive Pixar-Style Eyes & Eyelids
     const eyeGroup = new THREE.Group();
-    eyeGroup.position.set(0, 0.1, 1.38);
+    eyeGroup.position.set(0, 0.12, 1.15);
 
-    const leftEyeGeo = new THREE.CapsuleGeometry(0.09, 0.35, 16, 16);
-    leftEyeGeo.rotateZ(Math.PI / 2);
-    const rightEyeGeo = leftEyeGeo.clone();
-
-    const eyeMat = new THREE.MeshStandardMaterial({
-      color: 0x38bdf8,
-      emissive: 0x38bdf8,
-      emissiveIntensity: 3.5,
-      roughness: 0.1,
+    const scleraGeo = new THREE.SphereGeometry(0.24, 32, 32);
+    const scleraMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.05,
+      metalness: 0.0,
     });
+    materialsRef.current.push({ mat: scleraMat, originalColor: 0xffffff });
 
-    const leftEye = new THREE.Mesh(leftEyeGeo, eyeMat);
-    leftEye.position.set(-0.45, 0, 0);
-    const rightEye = new THREE.Mesh(rightEyeGeo, eyeMat);
-    rightEye.position.set(0.45, 0, 0);
-
-    // Visor Accent Line (Cyan Neon Slit)
-    const visorStripGeo = new THREE.BoxGeometry(1.6, 0.04, 0.06);
-    const visorStripMat = new THREE.MeshStandardMaterial({
-      color: 0xec4899,
-      emissive: 0xec4899,
-      emissiveIntensity: 4.0,
+    const irisGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.06, 32);
+    irisGeo.rotateX(Math.PI / 2);
+    const irisMat = new THREE.MeshStandardMaterial({
+      color: 0x3d2112, // Rich dark brown iris
       roughness: 0.2,
     });
-    const visorStrip = new THREE.Mesh(visorStripGeo, visorStripMat);
-    visorStrip.position.set(0, -0.28, 0);
+    materialsRef.current.push({ mat: irisMat, originalColor: 0x3d2112 });
 
-    eyeGroup.add(leftEye, rightEye, visorStrip);
+    const pupilGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.08, 32);
+    pupilGeo.rotateX(Math.PI / 2);
+    const pupilMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
+
+    // Catchlight (Sparkle in eye)
+    const catchlightGeo = new THREE.SphereGeometry(0.04, 16, 16);
+    const catchlightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+    // Build Left & Right Eye Units
+    const createEye = (xPos) => {
+      const eyeUnit = new THREE.Group();
+      eyeUnit.position.set(xPos, 0, 0);
+
+      const sclera = new THREE.Mesh(scleraGeo, scleraMat);
+      const iris = new THREE.Mesh(irisGeo, irisMat);
+      iris.position.set(0, 0, 0.21);
+
+      const pupil = new THREE.Mesh(pupilGeo, pupilMat);
+      pupil.position.set(0, 0, 0.22);
+
+      const sparkle = new THREE.Mesh(catchlightGeo, catchlightMat);
+      sparkle.position.set(0.045, 0.045, 0.25);
+
+      eyeUnit.add(sclera, iris, pupil, sparkle);
+      return eyeUnit;
+    };
+
+    const leftEye = createEye(-0.42);
+    const rightEye = createEye(0.42);
+    eyeGroup.add(leftEye, rightEye);
+
+    // Eyelids (for natural blinking animation)
+    const eyelidGeo = new THREE.SphereGeometry(0.26, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5);
+    const leftEyelid = new THREE.Mesh(eyelidGeo, skinMat);
+    leftEyelid.position.set(-0.42, 0, 0);
+    leftEyelid.rotation.x = -Math.PI * 0.5; // Open by default
+
+    const rightEyelid = new THREE.Mesh(eyelidGeo, skinMat);
+    rightEyelid.position.set(0.42, 0, 0);
+    rightEyelid.rotation.x = -Math.PI * 0.5;
+
+    eyeGroup.add(leftEyelid, rightEyelid);
     characterGroup.add(eyeGroup);
 
-    // 4. Cyber Audio Ear Modules (Left & Right)
-    const earGeo = new THREE.CylinderGeometry(0.38, 0.42, 0.28, 32);
-    earGeo.rotateZ(Math.PI / 2);
-    const earMat = new THREE.MeshStandardMaterial({
-      color: 0x181a24,
-      metalness: 0.85,
-      roughness: 0.25,
+    // 4. Stylized Eyebrows
+    const browGeo = new THREE.BoxGeometry(0.38, 0.07, 0.09);
+    const browMat = new THREE.MeshStandardMaterial({ color: 0x141217, roughness: 0.8 });
+    materialsRef.current.push({ mat: browMat, originalColor: 0x141217 });
+
+    const leftBrow = new THREE.Mesh(browGeo, browMat);
+    leftBrow.position.set(-0.45, 0.44, 1.18);
+    leftBrow.rotation.z = 0.12;
+    leftBrow.rotation.x = 0.15;
+
+    const rightBrow = new THREE.Mesh(browGeo, browMat);
+    rightBrow.position.set(0.45, 0.44, 1.18);
+    rightBrow.rotation.z = -0.12;
+    rightBrow.rotation.x = 0.15;
+
+    characterGroup.add(leftBrow, rightBrow);
+
+    // 5. Stylized Sculpted Mustache & Beard (Matching Photo Likeness!)
+    const mustacheGroup = new THREE.Group();
+    const mustacheGeo = new THREE.CylinderGeometry(0.08, 0.05, 0.42, 24);
+    mustacheGeo.rotateZ(Math.PI / 2);
+    const facialHairMat = new THREE.MeshStandardMaterial({
+      color: 0x18161b,
+      roughness: 0.7,
     });
+    materialsRef.current.push({ mat: facialHairMat, originalColor: 0x18161b });
 
-    const leftEar = new THREE.Mesh(earGeo, earMat);
-    leftEar.position.set(-1.42, 0, 0);
-    const rightEar = leftEar.clone();
-    rightEar.position.set(1.42, 0, 0);
+    const leftStache = new THREE.Mesh(mustacheGeo, facialHairMat);
+    leftStache.position.set(-0.21, -0.38, 1.25);
+    leftStache.rotation.z = -0.15;
 
-    // Glowing Neon Rings on Ears
-    const ringGeo = new THREE.TorusGeometry(0.36, 0.04, 16, 48);
-    ringGeo.rotateY(Math.PI / 2);
+    const rightStache = new THREE.Mesh(mustacheGeo, facialHairMat);
+    rightStache.position.set(0.21, -0.38, 1.25);
+    rightStache.rotation.z = 0.15;
 
-    const purpleRingMat = new THREE.MeshStandardMaterial({
-      color: 0x8b5cf6,
-      emissive: 0x8b5cf6,
-      emissiveIntensity: 3.5,
+    // Beard / Chin Stubble Contour
+    const chinBeardGeo = new THREE.SphereGeometry(0.24, 24, 16);
+    chinBeardGeo.scale(1.2, 0.6, 0.5);
+    const chinBeard = new THREE.Mesh(chinBeardGeo, facialHairMat);
+    chinBeard.position.set(0, -0.85, 1.05);
+
+    mustacheGroup.add(leftStache, rightStache, chinBeard);
+    characterGroup.add(mustacheGroup);
+
+    // 6. Modern Dark Navy Suit Jacket & White Dress Shirt
+    const suitGroup = new THREE.Group();
+    suitGroup.position.set(0, -1.9, 0);
+
+    // Navy Blazer Jacket Torso
+    const jacketGeo = new THREE.CylinderGeometry(1.25, 1.45, 1.2, 32);
+    jacketGeo.scale(1.2, 1.0, 0.85);
+    const jacketMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a, // Deep navy blue matching suit in photo
+      roughness: 0.65,
+      metalness: 0.1,
     });
-    const pinkRingMat = new THREE.MeshStandardMaterial({
+    materialsRef.current.push({ mat: jacketMat, originalColor: 0x0f172a });
+    const jacketMesh = new THREE.Mesh(jacketGeo, jacketMat);
+    suitGroup.add(jacketMesh);
+
+    // White Shirt V-Neck Collar
+    const shirtGeo = new THREE.ConeGeometry(0.45, 0.75, 4);
+    shirtGeo.rotateY(Math.PI / 4);
+    const shirtMat = new THREE.MeshStandardMaterial({
+      color: 0xf8fafc, // Crisp white shirt
+      roughness: 0.35,
+    });
+    materialsRef.current.push({ mat: shirtMat, originalColor: 0xf8fafc });
+    const shirtMesh = new THREE.Mesh(shirtGeo, shirtMat);
+    shirtMesh.position.set(0, 0.32, 0.68);
+    shirtMesh.scale.set(1.1, 1.0, 0.25);
+    suitGroup.add(shirtMesh);
+
+    // Blazer Lapels (Left and Right)
+    const lapelGeo = new THREE.BoxGeometry(0.28, 0.85, 0.08);
+    const leftLapel = new THREE.Mesh(lapelGeo, jacketMat);
+    leftLapel.position.set(-0.45, 0.22, 0.82);
+    leftLapel.rotation.z = -0.35;
+
+    const rightLapel = new THREE.Mesh(lapelGeo, jacketMat);
+    rightLapel.position.set(0.45, 0.22, 0.82);
+    rightLapel.rotation.z = 0.35;
+
+    suitGroup.add(leftLapel, rightLapel);
+    characterGroup.add(suitGroup);
+
+    // ==========================================
+    // BLENDER STUDIO LIGHTING GIZMO & TECH PROPS
+    // ==========================================
+
+    // Orbiting 3D Blender Transform Gizmo Rings (RGB Axes)
+    const gizmoGroup = new THREE.Group();
+
+    const ringRedGeo = new THREE.TorusGeometry(2.35, 0.02, 16, 90);
+    const ringRedMat = new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.45 });
+    const ringRed = new THREE.Mesh(ringRedGeo, ringRedMat);
+    ringRed.rotation.x = Math.PI / 2;
+
+    const ringGreenGeo = new THREE.TorusGeometry(2.45, 0.02, 16, 90);
+    const ringGreenMat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.45 });
+    const ringGreen = new THREE.Mesh(ringGreenGeo, ringGreenMat);
+
+    const ringBlueGeo = new THREE.TorusGeometry(2.55, 0.02, 16, 90);
+    const ringBlueMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.45 });
+    const ringBlue = new THREE.Mesh(ringBlueGeo, ringBlueMat);
+    ringBlue.rotation.y = Math.PI / 2;
+
+    gizmoGroup.add(ringRed, ringGreen, ringBlue);
+    scene.add(gizmoGroup);
+
+    // Orbiting Floating Tech Props
+    // 1. React Atom Nucleus & Orbit Rings
+    const reactAtomGroup = new THREE.Group();
+    const reactCoreGeo = new THREE.SphereGeometry(0.14, 24, 24);
+    const reactCoreMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      emissive: 0x38bdf8,
+      emissiveIntensity: 2.5,
+    });
+    const reactCore = new THREE.Mesh(reactCoreGeo, reactCoreMat);
+    reactAtomGroup.add(reactCore);
+
+    const atomRingGeo = new THREE.TorusGeometry(0.38, 0.02, 16, 48);
+    const atomRingMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+    for (let r = 0; r < 3; r++) {
+      const atomRing = new THREE.Mesh(atomRingGeo, atomRingMat);
+      atomRing.rotation.x = (Math.PI / 3) * r;
+      atomRing.rotation.y = (Math.PI / 4) * r;
+      reactAtomGroup.add(atomRing);
+    }
+    scene.add(reactAtomGroup);
+
+    // 2. Glowing Code Diamond / Octahedron
+    const diamondGeo = new THREE.OctahedronGeometry(0.24, 0);
+    const diamondMat = new THREE.MeshPhysicalMaterial({
       color: 0xec4899,
-      emissive: 0xec4899,
-      emissiveIntensity: 3.5,
-    });
-
-    const leftEarRing = new THREE.Mesh(ringGeo, purpleRingMat);
-    leftEarRing.position.set(-1.54, 0, 0);
-    const rightEarRing = new THREE.Mesh(ringGeo, pinkRingMat);
-    rightEarRing.position.set(1.54, 0, 0);
-
-    characterGroup.add(leftEar, rightEar, leftEarRing, rightEarRing);
-
-    // 5. Crown / Antenna Top Sensor
-    const sensorGeo = new THREE.ConeGeometry(0.12, 0.4, 24);
-    const sensorMat = new THREE.MeshStandardMaterial({
-      color: 0x222634,
-      metalness: 0.9,
-      roughness: 0.2,
-    });
-    const sensor = new THREE.Mesh(sensorGeo, sensorMat);
-    sensor.position.set(0, 1.55, 0);
-
-    const sensorLightGeo = new THREE.SphereGeometry(0.08, 16, 16);
-    const sensorLightMat = new THREE.MeshStandardMaterial({
-      color: 0x3b82f6,
-      emissive: 0x3b82f6,
-      emissiveIntensity: 4.0,
-    });
-    const sensorLight = new THREE.Mesh(sensorLightGeo, sensorLightMat);
-    sensorLight.position.set(0, 1.78, 0);
-
-    characterGroup.add(sensor, sensorLight);
-
-    // 6. Orbiting Kinetic Gyroscope Halo Rings
-    const orbitRingGroup1 = new THREE.Group();
-    const haloGeo1 = new THREE.TorusGeometry(2.1, 0.035, 16, 100);
-    const haloMat1 = new THREE.MeshPhysicalMaterial({
-      color: 0x8b5cf6,
-      emissive: 0x8b5cf6,
+      emissive: 0x831843,
       emissiveIntensity: 1.2,
-      metalness: 0.8,
       roughness: 0.1,
+      metalness: 0.9,
       clearcoat: 1.0,
     });
-    const halo1 = new THREE.Mesh(haloGeo1, haloMat1);
-    orbitRingGroup1.add(halo1);
-    orbitRingGroup1.rotation.x = Math.PI * 0.35;
-    orbitRingGroup1.rotation.y = Math.PI * 0.15;
-    scene.add(orbitRingGroup1);
+    const diamond = new THREE.Mesh(diamondGeo, diamondMat);
+    scene.add(diamond);
 
-    const orbitRingGroup2 = new THREE.Group();
-    const haloGeo2 = new THREE.TorusGeometry(2.35, 0.025, 16, 100);
-    const haloMat2 = new THREE.MeshPhysicalMaterial({
-      color: 0xec4899,
-      emissive: 0xec4899,
-      emissiveIntensity: 1.0,
-      metalness: 0.7,
-      roughness: 0.15,
-    });
-    const halo2 = new THREE.Mesh(haloGeo2, haloMat2);
-    orbitRingGroup2.add(halo2);
-    orbitRingGroup2.rotation.x = -Math.PI * 0.25;
-    orbitRingGroup2.rotation.z = Math.PI * 0.3;
-    scene.add(orbitRingGroup2);
-
-    // 7. Companion Floating Satellite Orbs
-    const orb1Geo = new THREE.SphereGeometry(0.2, 32, 32);
-    const orb1Mat = new THREE.MeshStandardMaterial({
-      color: 0x8b5cf6,
-      emissive: 0x8b5cf6,
-      emissiveIntensity: 2.2,
-      roughness: 0.1,
-      metalness: 0.9,
-    });
-    const orb1 = new THREE.Mesh(orb1Geo, orb1Mat);
-    scene.add(orb1);
-
-    const orb2Geo = new THREE.IcosahedronGeometry(0.22, 1);
-    const orb2Mat = new THREE.MeshStandardMaterial({
-      color: 0xec4899,
-      emissive: 0xec4899,
-      emissiveIntensity: 2.0,
-      roughness: 0.15,
-      metalness: 0.8,
-      wireframe: false,
-    });
-    const orb2 = new THREE.Mesh(orb2Geo, orb2Mat);
-    scene.add(orb2);
-
-    // 8. 3D Floating Particle Sparkles / Stardust
-    const particleCount = 140;
+    // 3. Stardust Particle Cloud
+    const particleCount = 120;
     const particleGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    const palette = [
-      new THREE.Color(0x8b5cf6),
-      new THREE.Color(0xec4899),
-      new THREE.Color(0x38bdf8),
-      new THREE.Color(0xffffff),
-    ];
-
-    for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 12;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
-
-      const col = palette[Math.floor(Math.random() * palette.length)];
-      colors[i * 3] = col.r;
-      colors[i * 3 + 1] = col.g;
-      colors[i * 3 + 2] = col.b;
+    const particlePos = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      particlePos[i] = (Math.random() - 0.5) * 10;
+      particlePos[i + 1] = (Math.random() - 0.5) * 8;
+      particlePos[i + 2] = (Math.random() - 0.5) * 6;
     }
-
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
     const particleMat = new THREE.PointsMaterial({
-      size: 0.07,
-      vertexColors: true,
+      size: 0.05,
+      color: 0xc084fc,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending,
     });
     const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
     // ==========================================
-    // CINEMATIC LIGHTING
+    // BLENDER CYCLES 3-POINT STUDIO LIGHTING
     // ==========================================
-    const ambientLight = new THREE.AmbientLight(0x18102b, 1.8);
+    const ambientLight = new THREE.AmbientLight(0x231a38, 2.2);
     scene.add(ambientLight);
 
-    // Front-Right White/Cyan Key Light
-    const keyLight = new THREE.DirectionalLight(0xe0f2fe, 3.2);
+    // Warm Key Light (Upper Front Right)
+    const keyLight = new THREE.DirectionalLight(0xfff5ea, 3.2);
     keyLight.position.set(4, 5, 5);
     scene.add(keyLight);
 
-    // Rear-Left Pink Rim Light (Silhouetting)
+    // Cyan Fill Light (Front Left)
+    const fillLight = new THREE.DirectionalLight(0x38bdf8, 2.0);
+    fillLight.position.set(-4, 2, 4);
+    scene.add(fillLight);
+
+    // Neon Pink Rim Light (Back Left - Silhouetting hair & shoulders)
     const rimLightPink = new THREE.DirectionalLight(0xec4899, 5.0);
-    rimLightPink.position.set(-6, 2, -4);
+    rimLightPink.position.set(-5, 3, -4);
     scene.add(rimLightPink);
 
-    // Bottom-Right Purple Rim Light
-    const rimLightPurple = new THREE.DirectionalLight(0x8b5cf6, 4.0);
-    rimLightPurple.position.set(5, -4, -3);
+    // Electric Purple Rim Light (Back Right)
+    const rimLightPurple = new THREE.DirectionalLight(0x8b5cf6, 4.2);
+    rimLightPurple.position.set(5, -2, -3);
     scene.add(rimLightPurple);
 
-    // Dynamic Cursor Tracking Point Light
-    const cursorLight = new THREE.PointLight(0x38bdf8, 2.5, 8);
+    // Cursor Follow Point Light
+    const cursorLight = new THREE.PointLight(0x38bdf8, 2.0, 8);
     cursorLight.position.set(0, 0, 4);
     scene.add(cursorLight);
 
     // ==========================================
-    // INTERACTION & ANIMATION
+    // MOUSE INTERACTION & ANIMATION LOOP
     // ==========================================
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
     let isDragging = false;
-    let prevPointerX = 0;
-    let prevPointerY = 0;
-    let dragRotationX = 0;
-    let dragRotationY = 0;
+    let prevX = 0;
+    let prevY = 0;
+    let dragRotX = 0;
+    let dragRotY = 0;
 
     const handleMouseMove = (e) => {
       const rect = container.getBoundingClientRect();
-      const clientX = e.clientX - rect.left;
-      const clientY = e.clientY - rect.top;
-      mouse.targetX = (clientX / rect.width) * 2 - 1;
-      mouse.targetY = -(clientY / rect.height) * 2 + 1;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      mouse.targetX = (x / rect.width) * 2 - 1;
+      mouse.targetY = -(y / rect.height) * 2 + 1;
     };
 
     const handlePointerDown = (e) => {
       isDragging = true;
-      prevPointerX = e.clientX;
-      prevPointerY = e.clientY;
+      prevX = e.clientX;
+      prevY = e.clientY;
     };
 
     const handlePointerMove = (e) => {
       if (!isDragging) return;
-      const deltaX = e.clientX - prevPointerX;
-      const deltaY = e.clientY - prevPointerY;
-      dragRotationY += deltaX * 0.008;
-      dragRotationX += deltaY * 0.008;
-      prevPointerX = e.clientX;
-      prevPointerY = e.clientY;
+      const deltaX = e.clientX - prevX;
+      const deltaY = e.clientY - prevY;
+      dragRotY += deltaX * 0.008;
+      dragRotX += deltaY * 0.008;
+      prevX = e.clientX;
+      prevY = e.clientY;
     };
 
     const handlePointerUp = () => {
@@ -313,19 +417,16 @@ export default function Hero3D() {
     window.addEventListener('pointermove', handlePointerMove);
     window.addEventListener('pointerup', handlePointerUp);
 
-    // Resize Handler
     const handleResize = () => {
       if (!container) return;
-      const newWidth = container.clientWidth;
-      const newHeight = container.clientHeight;
-      camera.aspect = newWidth / newHeight;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(newWidth, newHeight);
+      renderer.setSize(w, h);
     };
-
     window.addEventListener('resize', handleResize);
 
-    // Render Loop
     let animationFrameId;
     const clock = new THREE.Clock();
 
@@ -333,76 +434,76 @@ export default function Hero3D() {
       animationFrameId = requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Smooth Mouse Follow Interpolation
-      mouse.x += (mouse.targetX - mouse.x) * 0.05;
-      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+      // Damped smooth mouse tracking
+      mouse.x += (mouse.targetX - mouse.x) * 0.06;
+      mouse.y += (mouse.targetY - mouse.y) * 0.06;
 
-      // Damp drag rotation back slowly
       if (!isDragging) {
-        dragRotationX *= 0.95;
-        dragRotationY *= 0.95;
+        dragRotX *= 0.94;
+        dragRotY *= 0.94;
       }
 
-      // Character Head Look-At & Hover
-      characterGroup.rotation.y = mouse.x * 0.55 + dragRotationY;
-      characterGroup.rotation.x = -mouse.y * 0.45 + dragRotationX;
-      characterGroup.rotation.z = mouse.x * 0.08;
+      // 3D Avatar Head & Body Turn to Face Mouse
+      characterGroup.rotation.y = mouse.x * 0.45 + dragRotY;
+      characterGroup.rotation.x = -mouse.y * 0.35 + dragRotX;
+      characterGroup.rotation.z = mouse.x * 0.06;
 
-      // Sinusoidal floating hover motion
-      const hoverY = Math.sin(elapsed * 1.6) * 0.16;
+      // Sinusoidal floating / breathing
+      const hoverY = Math.sin(elapsed * 1.5) * 0.12;
       characterGroup.position.y = hoverY;
 
-      // Eye blink / pulse effect
-      const blinkCycle = Math.sin(elapsed * 0.8);
+      // Natural Eye Tracking (Eyes move slightly ahead of head)
+      leftEye.position.x = -0.42 + mouse.x * 0.04;
+      leftEye.position.y = mouse.y * 0.03;
+      rightEye.position.x = 0.42 + mouse.x * 0.04;
+      rightEye.position.y = mouse.y * 0.03;
+
+      // Natural Periodic Blinking Animation (quick 150ms blink every ~3.5s)
+      const blinkCycle = Math.sin(elapsed * 0.9);
       if (blinkCycle > 0.96) {
-        leftEye.scale.y = 0.1;
-        rightEye.scale.y = 0.1;
+        leftEyelid.rotation.x = 0; // closed
+        rightEyelid.rotation.x = 0;
       } else {
-        leftEye.scale.y = 1.0;
-        rightEye.scale.y = 1.0;
+        leftEyelid.rotation.x = -Math.PI * 0.5; // open
+        rightEyelid.rotation.x = -Math.PI * 0.5;
       }
 
-      // Orbiting Gyroscope Rings
-      orbitRingGroup1.rotation.z = elapsed * 0.35;
-      orbitRingGroup1.rotation.y = elapsed * 0.2 + mouse.x * 0.2;
-      orbitRingGroup1.position.y = hoverY * 0.6;
+      // Gizmo Slow Rotation
+      gizmoGroup.rotation.y = elapsed * 0.15;
+      gizmoGroup.rotation.x = Math.sin(elapsed * 0.3) * 0.1;
 
-      orbitRingGroup2.rotation.z = -elapsed * 0.28;
-      orbitRingGroup2.rotation.x = elapsed * 0.18 + mouse.y * 0.2;
-      orbitRingGroup2.position.y = hoverY * 0.6;
-
-      // Orbiting Companion Orbs
-      const orb1Angle = elapsed * 0.9;
-      orb1.position.set(
-        Math.cos(orb1Angle) * 2.8,
-        Math.sin(elapsed * 1.5) * 0.6 + hoverY,
-        Math.sin(orb1Angle) * 2.2
+      // Orbiting React Atom Prop
+      const atomAngle = elapsed * 0.75;
+      reactAtomGroup.position.set(
+        Math.cos(atomAngle) * 2.8,
+        Math.sin(elapsed * 1.6) * 0.5 + hoverY + 0.3,
+        Math.sin(atomAngle) * 2.2
       );
-      orb1.rotation.y = elapsed * 2;
+      reactAtomGroup.rotation.y = elapsed * 2;
+      reactAtomGroup.rotation.x = elapsed * 1.2;
 
-      const orb2Angle = -elapsed * 0.7 + Math.PI;
-      orb2.position.set(
-        Math.cos(orb2Angle) * 3.1,
-        Math.sin(elapsed * 1.2 + 1) * 0.7 + hoverY,
-        Math.sin(orb2Angle) * 2.5
+      // Orbiting Code Diamond Prop
+      const diamondAngle = -elapsed * 0.65 + Math.PI;
+      diamond.position.set(
+        Math.cos(diamondAngle) * 3.0,
+        Math.sin(elapsed * 1.3 + 1) * 0.6 + hoverY - 0.2,
+        Math.sin(diamondAngle) * 2.4
       );
-      orb2.rotation.x = elapsed * 1.5;
-      orb2.rotation.y = elapsed * 1.8;
+      diamond.rotation.x = elapsed * 1.5;
+      diamond.rotation.y = elapsed * 1.8;
 
-      // Dynamic cursor point light
+      // Particles gentle drift
+      particles.rotation.y = elapsed * 0.03;
+
+      // Dynamic cursor light
       cursorLight.position.x = mouse.x * 4;
       cursorLight.position.y = mouse.y * 3;
-
-      // Slow particle rotation
-      particles.rotation.y = elapsed * 0.04;
-      particles.rotation.x = elapsed * 0.02;
 
       renderer.render(scene, camera);
     };
 
     animate();
 
-    // Cleanup
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('mousemove', handleMouseMove);
@@ -415,44 +516,60 @@ export default function Hero3D() {
         container.removeChild(renderer.domElement);
       }
 
-      // Dispose resources
+      // Dispose
       headGeo.dispose();
-      headMat.dispose();
-      visorGeo.dispose();
-      visorMat.dispose();
-      leftEyeGeo.dispose();
-      rightEyeGeo.dispose();
-      eyeMat.dispose();
-      visorStripGeo.dispose();
-      visorStripMat.dispose();
-      earGeo.dispose();
-      earMat.dispose();
-      ringGeo.dispose();
-      purpleRingMat.dispose();
-      pinkRingMat.dispose();
-      sensorGeo.dispose();
-      sensorMat.dispose();
-      sensorLightGeo.dispose();
-      sensorLightMat.dispose();
-      haloGeo1.dispose();
-      haloMat1.dispose();
-      haloGeo2.dispose();
-      haloMat2.dispose();
-      orb1Geo.dispose();
-      orb1Mat.dispose();
-      orb2Geo.dispose();
-      orb2Mat.dispose();
+      neckGeo.dispose();
+      cheekGeo.dispose();
+      hairCapGeo.dispose();
+      quiff1Geo.dispose();
+      quiff2Geo.dispose();
+      quiff3Geo.dispose();
+      scleraGeo.dispose();
+      irisGeo.dispose();
+      pupilGeo.dispose();
+      catchlightGeo.dispose();
+      eyelidGeo.dispose();
+      browGeo.dispose();
+      mustacheGeo.dispose();
+      chinBeardGeo.dispose();
+      jacketGeo.dispose();
+      shirtGeo.dispose();
+      lapelGeo.dispose();
+      ringRedGeo.dispose();
+      ringGreenGeo.dispose();
+      ringBlueGeo.dispose();
+      reactCoreGeo.dispose();
+      atomRingGeo.dispose();
+      diamondGeo.dispose();
       particleGeo.dispose();
-      particleMat.dispose();
       renderer.dispose();
     };
   }, []);
+
+  // Update Materials when Shading Mode changes (Rendered / Clay / Wireframe)
+  useEffect(() => {
+    materialsRef.current.forEach(({ mat, originalColor }) => {
+      if (shadingMode === 'clay') {
+        mat.wireframe = false;
+        mat.color.setHex(0xc8b6a6); // Sculptor clay matte
+        mat.roughness = 0.85;
+        mat.metalness = 0.0;
+      } else if (shadingMode === 'wireframe') {
+        mat.wireframe = true;
+        mat.color.setHex(0x38bdf8); // Holographic wireframe cyan
+      } else {
+        mat.wireframe = false;
+        mat.color.setHex(originalColor);
+        mat.roughness = 0.38;
+      }
+    });
+  }, [shadingMode]);
 
   return (
     <div 
       ref={containerRef} 
       className="hero-3d-canvas-wrapper" 
-      aria-label="Interactive 3D Character"
+      aria-label="3D Cartoon Avatar of Albin Sunny"
       style={{
         width: '100%',
         height: '100%',
@@ -462,4 +579,3 @@ export default function Hero3D() {
     />
   );
 }
-

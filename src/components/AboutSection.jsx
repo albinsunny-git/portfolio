@@ -1,9 +1,21 @@
-import React from 'react';
-import { Award, GraduationCap, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Award, GraduationCap, ArrowRight, Sparkles, Box, Sliders } from 'lucide-react';
 import About3D from './About3D';
 
 export default function AboutSection({ portfolioData, onOpenCertifications }) {
   const { name = 'Albin Sunny', stats = {} } = portfolioData || {};
+  const [tiltOffset, setTiltOffset] = useState({ x: 0, y: 0 });
+
+  const handleMouseMoveTilt = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTiltOffset({ x: x * 15, y: -y * 15 });
+  };
+
+  const handleMouseLeaveTilt = () => {
+    setTiltOffset({ x: 0, y: 0 });
+  };
 
   const techStack = [
     { name: 'React.js', color: '#38bdf8' },
@@ -13,6 +25,7 @@ export default function AboutSection({ portfolioData, onOpenCertifications }) {
     { name: 'C / C++', color: '#3b82f6' },
     { name: 'Flutter', color: '#06b6d4' },
     { name: 'Figma & UI/UX', color: '#f43f5e' },
+    { name: 'Blender 3D Modeling', color: '#f97316' },
     { name: 'LaTeX & Research', color: '#a855f7' },
   ];
 
@@ -34,7 +47,7 @@ export default function AboutSection({ portfolioData, onOpenCertifications }) {
           <div className="section-pre-tag">
             <span className="pre-tag-number">01</span>
             <span className="pre-tag-dash">/</span>
-            <span className="pre-tag-label">BIOGRAPHY &amp; CAPABILITIES</span>
+            <span className="pre-tag-label">BIOGRAPHY &amp; 3D CAPABILITIES</span>
           </div>
           <h2 className="section-huge-heading">
             ABOUT <span className="text-gradient-purple">ME</span>
@@ -44,13 +57,48 @@ export default function AboutSection({ portfolioData, onOpenCertifications }) {
         {/* 2-Column Showcase */}
         <div className="about-grid">
           
-          {/* Left Column: Interactive 3D Floating Decorative Canvas */}
+          {/* Left Column: 8K 3D Creative Character Card + Interactive 3D Canvas */}
           <div className="about-3d-column">
-            <div className="about-3d-card">
+            
+            {/* 8K 3D Creative Character Card with Perspective Tilt */}
+            <div 
+              className="about-character-card"
+              onMouseMove={handleMouseMoveTilt}
+              onMouseLeave={handleMouseLeaveTilt}
+              style={{
+                transform: `perspective(1000px) rotateX(${tiltOffset.y}deg) rotateY(${tiltOffset.x}deg)`,
+                transition: 'transform 0.15s ease-out'
+              }}
+            >
+              <div className="about-character-frame">
+                <img
+                  src="/3d-avatar-about.jpg"
+                  alt="3D Creative Cartoon Character of Albin Sunny"
+                  className="about-character-img"
+                  onError={(e) => {
+                    e.target.src = "/3d-avatar-hero.jpg";
+                  }}
+                />
+                
+                {/* Blender Metadata Badges */}
+                <div className="about-char-badge top-left">
+                  <Box size={13} />
+                  <span>Blender 3D Cartoon Model</span>
+                </div>
+
+                <div className="about-char-badge bottom-right">
+                  <Sparkles size={13} />
+                  <span>8K Pixar Aesthetic</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Floating 3D Geometric Canvas */}
+            <div className="about-3d-card" style={{ minHeight: '320px' }}>
               <About3D />
               <div className="about-3d-caption">
                 <span className="caption-dot"></span>
-                <span>Interactive 3D Geometric Artifacts</span>
+                <span>Interactive 3D Geometric Artifacts &bull; Cursor Parallax</span>
               </div>
             </div>
 
@@ -74,15 +122,14 @@ export default function AboutSection({ portfolioData, onOpenCertifications }) {
             {/* Bio Narrative */}
             <div className="about-bio-box">
               <h3 className="about-subheading">
-                Engineering with artistic precision, building digital experiences that leave a lasting mark.
+                Engineering with artistic precision, blending 3D computer graphics with robust software systems.
               </h3>
               <p className="about-paragraph">
-                I am <strong className="text-white">{name}</strong>, a computer science scholar and creative technologist. 
-                My focus lies at the crossroads of intuitive user experience and performant system architecture. 
-                From authoring published scientific research in nanotechnology to building full-stack financial management applications, I bridge theoretical concepts with production-ready software.
+                I am <strong className="text-white">{name}</strong>, a computer science scholar, creative technologist, and 3D web enthusiast. 
+                My focus lies at the crossroads of intuitive user experience, 3D character design, and performant backend architecture.
               </p>
               <p className="about-paragraph">
-                Whether creating interactive 3D web spaces or writing optimized C++ algorithms, I treat code as a medium for creative expression and pragmatic problem solving.
+                From authoring published scientific research in nanotechnology to engineering full-stack financial platforms and interactive 3D WebGL scenes, I treat code as a medium for artistic expression and real-world utility.
               </p>
             </div>
 
@@ -117,8 +164,34 @@ export default function AboutSection({ portfolioData, onOpenCertifications }) {
               </div>
             </div>
 
+            {/* Blender Shading & Rendering Capabilities */}
+            <div className="blender-specs-card">
+              <div className="blender-specs-header">
+                <Sliders size={15} className="specs-icon" />
+                <span className="specs-title">3D Rendering &amp; Shading Specifications</span>
+              </div>
+              <div className="blender-specs-grid">
+                <div className="spec-item">
+                  <span className="spec-label">Render Pipeline</span>
+                  <span className="spec-value">Blender Cycles X / Three.js WebGL</span>
+                </div>
+                <div className="spec-item">
+                  <span className="spec-label">Character Shading</span>
+                  <span className="spec-value">Subsurface Scattering (SSS) 8K</span>
+                </div>
+                <div className="spec-item">
+                  <span className="spec-label">Lighting Model</span>
+                  <span className="spec-value">Ray Traced 3-Point Studio Rig</span>
+                </div>
+                <div className="spec-item">
+                  <span className="spec-label">Fidelity</span>
+                  <span className="spec-value">High-Poly Pixar Cartoon Likeness</span>
+                </div>
+              </div>
+            </div>
+
             {/* Tech Stack Pills */}
-            <div className="about-skills-section">
+            <div className="about-skills-section" style={{ marginTop: '1.75rem' }}>
               <h4 className="skills-subheading">Core Tech Stack</h4>
               <div className="skills-tags-wrap">
                 {techStack.map((tech) => (

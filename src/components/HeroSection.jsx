@@ -1,5 +1,5 @@
-import React from 'react';
-import { ArrowDown, ArrowUpRight, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowDown, ArrowUpRight, Sparkles, Eye, Box, Sliders } from 'lucide-react';
 import Hero3D from './Hero3D';
 
 const GithubIcon = ({ size = 18 }) => (
@@ -26,6 +26,22 @@ const MailIcon = ({ size = 18 }) => (
 
 export default function HeroSection({ portfolioData }) {
   const { name = 'Albin Sunny', statusText = 'Open for Internships & Projects' } = portfolioData || {};
+  
+  // 3D Viewport Controls (Cycles 8K vs Interactive 3D Viewport)
+  const [viewMode, setViewMode] = useState('8k'); // '8k' | 'interactive'
+  const [shadingMode, setShadingMode] = useState('rendered'); // 'rendered' | 'clay' | 'wireframe'
+  const [tiltOffset, setTiltOffset] = useState({ x: 0, y: 0 });
+
+  const handleMouseMoveParallax = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTiltOffset({ x: x * 18, y: -y * 18 });
+  };
+
+  const handleMouseLeaveParallax = () => {
+    setTiltOffset({ x: 0, y: 0 });
+  };
 
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
@@ -69,7 +85,7 @@ export default function HeroSection({ portfolioData }) {
 
           {/* Subtitle / Tagline */}
           <p className="hero-tagline">
-            Creative Developer &amp; Software Engineering Student crafting immersive 3D web applications, elegant human-centric UI/UX, and scalable digital architectures.
+            Creative Developer &amp; Software Engineering Student crafting immersive 3D digital experiences, Pixar/Blender-inspired visual interfaces, and scalable web architectures.
           </p>
 
           {/* Action CTAs */}
@@ -132,13 +148,119 @@ export default function HeroSection({ portfolioData }) {
 
         </div>
 
-        {/* Right / Center: Interactive 3D Cyber Character */}
-        <div className="hero-3d-wrapper">
+        {/* Right / Center: 3D Cartoon Avatar & Blender Viewport Showcase */}
+        <div 
+          className="hero-3d-wrapper"
+          onMouseMove={handleMouseMoveParallax}
+          onMouseLeave={handleMouseLeaveParallax}
+        >
           <div className="hero-3d-glow-backdrop"></div>
-          <Hero3D />
-          <div className="hero-3d-hint">
-            <span>&bull; Interactive 3D Canvas &bull; Drag or Move Mouse &bull;</span>
+
+          {/* Blender Viewport HUD Header Bar */}
+          <div className="blender-hud-top">
+            <div className="blender-badge">
+              <span className="blender-dot-pulse"></span>
+              <span className="blender-badge-text">Blender 4.0 Cycles &bull; 8K Character</span>
+            </div>
+
+            {/* Mode Switcher */}
+            <div className="blender-toggle-group">
+              <button
+                type="button"
+                className={`blender-toggle-btn ${viewMode === '8k' ? 'blender-toggle-btn-active' : ''}`}
+                onClick={() => setViewMode('8k')}
+                title="View 8K Blender Cycles Character Render"
+              >
+                <Eye size={13} />
+                <span>8K Render</span>
+              </button>
+              <button
+                type="button"
+                className={`blender-toggle-btn ${viewMode === 'interactive' ? 'blender-toggle-btn-active' : ''}`}
+                onClick={() => setViewMode('interactive')}
+                title="View Real-Time Interactive 3D Model"
+              >
+                <Box size={13} />
+                <span>3D Viewport</span>
+              </button>
+            </div>
           </div>
+
+          {/* VIEW MODE 1: 8K BLENDER CYCLES CARTOON AVATAR */}
+          {viewMode === '8k' && (
+            <div 
+              className="avatar-8k-card"
+              style={{
+                transform: `perspective(1000px) rotateX(${tiltOffset.y}deg) rotateY(${tiltOffset.x}deg)`,
+                transition: 'transform 0.15s ease-out'
+              }}
+            >
+              <div className="avatar-8k-image-frame">
+                <img
+                  src="/3d-avatar-hero.jpg"
+                  alt="3D Cartoon Avatar of Albin Sunny (8K Blender Character)"
+                  className="avatar-8k-img"
+                  onError={(e) => {
+                    e.target.src = "/avatar.png";
+                  }}
+                />
+                
+                {/* Specular Light Flare & Studio Rim Glare */}
+                <div className="avatar-8k-rim-flare"></div>
+                <div className="avatar-8k-glass-sheen"></div>
+
+                {/* Floating 3D Blender Orbit Rings Overlay */}
+                <div className="avatar-floating-badge top-right">
+                  <Sparkles size={13} />
+                  <span>Subsurface Skin (SSS)</span>
+                </div>
+
+                <div className="avatar-floating-badge bottom-left">
+                  <Sliders size={13} />
+                  <span>Ray Traced Studio Rim</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* VIEW MODE 2: REAL-TIME INTERACTIVE THREE.JS 3D CHARACTER */}
+          {viewMode === 'interactive' && (
+            <div className="avatar-interactive-container">
+              <Hero3D shadingMode={shadingMode} />
+
+              {/* Shading Mode Selector (Rendered / Clay / Wireframe) */}
+              <div className="shading-controls-bar">
+                <span className="shading-label">Shading:</span>
+                <button
+                  type="button"
+                  className={`shading-btn ${shadingMode === 'rendered' ? 'shading-btn-active' : ''}`}
+                  onClick={() => setShadingMode('rendered')}
+                >
+                  Rendered
+                </button>
+                <button
+                  type="button"
+                  className={`shading-btn ${shadingMode === 'clay' ? 'shading-btn-active' : ''}`}
+                  onClick={() => setShadingMode('clay')}
+                >
+                  Clay
+                </button>
+                <button
+                  type="button"
+                  className={`shading-btn ${shadingMode === 'wireframe' ? 'shading-btn-active' : ''}`}
+                  onClick={() => setShadingMode('wireframe')}
+                >
+                  Wireframe
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Blender Viewport Bottom Tech Meta */}
+          <div className="blender-hud-bottom">
+            <span>&bull; Camera: 50mm f/1.8 &bull; Samples: 4096 &bull; Drag to rotate 3D</span>
+          </div>
+
         </div>
 
       </div>
@@ -158,4 +280,3 @@ export default function HeroSection({ portfolioData }) {
     </section>
   );
 }
-
